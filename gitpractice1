@@ -1,0 +1,54 @@
+
+class ValidationError(ValueError):
+    pass
+
+
+def validate_name(name):
+    first_name, last_name = name.split(",")
+    if not first_name:
+        raise ValidationError("No first name")
+    if not last_name:
+        raise ValidationError("No last name")
+    return first_name, last_name
+
+
+def validate_age(age):
+    assert 13 <= age <= 18
+    return age
+
+
+def write_member_to_file(first_name, last_name, age):
+    with open("registration.txt", "a") as f:
+        f.write(f"{first_name} {last_name} - age {age} \n")
+
+
+def read_file(file_name):
+    try:
+        with open(file_name, "r") as f:
+            print(f.readlines())
+    except FileNotFoundError as e:
+        print(f"{e} - {file_name} not found")
+
+
+name = input("Enter your first name and last name separated by a comma ")
+age = int(input("What is your age?"))
+
+isSuccessful = False
+
+try:
+    first_name, last_name = validate_name(name)
+    validate_age(age)
+except ValidationError as e:
+    print(f"Invalid name: {e}")
+except AssertionError:
+    print("You're not a teenager")
+else:
+    write_member_to_file(first_name, last_name, age)
+    isSuccessful = True
+finally:
+    if isSuccessful:
+        print(f"Successful registration!!")
+    else:
+        print(f"Failed registration!!")
+
+read_file("registration.txt")
